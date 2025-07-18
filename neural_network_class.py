@@ -11,35 +11,68 @@ class FeedforwardNeuralNetwork:
 
     ## Get config file
     def _get_config(self, configuration_file):
-        with open(configuration_file, 'r') as config_file:
-            config = json.load(config_file)
-        return config
+        sample_config = {
+            "layers": [
+                {
+                    "neurons": 3
+                },
+                {
+                    "neurons": 4,
+                    "activation": "relu"
+                },
+                {
+                    "neurons": 2,
+                    "activation": "softmax"
+                }
+            ]
+        }
+        
+        try:
+            with open(configuration_file, 'r') as config_file:
+                config = json.load(config_file)
+            return config
+        except Exception as e:
+            with open(configuration_file, 'w') as config_file:
+                config_file.write(json.dumps(sample_config, indent=4))
+            print(f"An error occurred upon obtaining config file: {e}")
+            print(f"{configuration_file} either doesn't exist or is inaccessible")
+            print(f"A sample {configuration_file} has been created. Please edit it according to your needs")
+            return sample_config
 
     ## Validation
+    def _handle_exception(self, exception):
+        print(f"{type(exception).__name__}: {exception}")
+        print("If you think that your config file is corrupted or don't know how to fix it, just delete the config file and I'll regenerate a sample one!")
+        exit()
+
     def _validate_structure(self):
         if not self.layers or not isinstance(self.layers, list):
-            raise ValueError("Configuration must contain a non-empty 'layers' list.")
-            
+            self._handle_exception(ValueError("Configuration must contain a non-empty 'layers' list"))
+
+        input_neurons = self.layers[0].get('neurons') # First layer neuron validation
+        if not isinstance(input_neurons, int) or input_neurons <= 0:
+            self._handle_exception(ValueError("layer 0 must have a 'neurons' key with a positive integer value"))
+
         supported_activation_functions = ['relu', 'softmax']
-        layers = self.layers[1:] # Exclude the first layer for activation validation
+        layers = self.layers[1:] # Exclude the first layer from validation specifically activation validation
         for index, layer in enumerate(layers, start=1):
             neurons = layer.get('neurons')
             activation_function = layer.get('activation')
             if not isinstance(neurons, int) or neurons <= 0:
-                raise ValueError(f"layer {index} must have a 'neurons' key with a positive integer value")
+                self._handle_exception(ValueError(f"layer {index} must have a 'neurons' key with a positive integer value"))
             elif activation_function is None or activation_function == '':
-                raise ValueError(f"layer {index} must have an 'activation' key with a non-empty value")
+                self._handle_exception(ValueError(f"layer {index} must have an 'activation' key with a non-empty string value"))
             elif activation_function not in supported_activation_functions:
-                raise ValueError(f"layer {index} has unsupported activation function: {activation_function}. Supported activation functions are: {supported_activation_functions}")
+                self._handle_exception(ValueError(f"layer {index} has an unsupported activation function: {activation_function}. Supported activation functions are: {supported_activation_functions}"))
 
     def _validate_input(self, activation):
         neurons = self.layers[0].get('neurons')
         if not isinstance(activation, np.ndarray) or not (np.issubdtype(activation.dtype, np.integer) or np.issubdtype(activation.dtype, np.floating)):
-            raise TypeError("Input activation vector must be a integer or floating dtype numpy array")
+            self._handle_exception(TypeError("Input activation vector must be an integer or floating dtype numpy array"))
         elif np.any(np.isnan(activation)):
-            raise ValueError("Input activation vector cannot contain NaN values")
+            self._handle_exception(ValueError("Input activation vector cannot contain NaN values"))
         elif activation.shape != (neurons, 1):
-            raise ValueError(f"Input activation vector shape {activation.shape} needs to match the shape {neurons, 1}")
+            self._handle_exception(ValueError(f"Input activation vector shape {activation.shape} needs to match the shape {neurons, 1}"))
 
     ## Initialization
     def _initialize_weights(self):

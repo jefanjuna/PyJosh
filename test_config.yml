@@ -1,0 +1,8 @@
+---
+layers: 
+- neurons: 3
+- neurons: 4
+  activation: relu
+- neurons: 2
+  activation: softmax
+...

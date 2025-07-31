@@ -37,7 +37,7 @@ activation = np.array(features_4[0])
 
 ## Testing
 
-neural_network = fnn('config.json')
+neural_network = fnn('config.yml')
 output = neural_network.forward(activation) # With this line, forward pass can be executed multiple times each with different input activations while keeping weights and biases the same. Basically multiple instances of the neural network.
 print(output)
 print(np.sum(output))

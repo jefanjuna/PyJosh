@@ -1,5 +1,5 @@
 import numpy as np
-import json
+import yaml
 
 class FeedforwardNeuralNetwork:
     def __init__(self, configuration_file):
@@ -29,11 +29,11 @@ class FeedforwardNeuralNetwork:
         
         try:
             with open(configuration_file, 'r') as config_file:
-                config = json.load(config_file)
+                config = yaml.safe_load(config_file)
             return config
         except Exception as e:
             with open(configuration_file, 'w') as config_file:
-                config_file.write(json.dumps(sample_config, indent=4))
+                yaml.dump(sample_config, config_file, sort_keys=False)
             print(f"An error occurred upon obtaining config file: {e}")
             print(f"{configuration_file} either doesn't exist or is inaccessible")
             print(f"A sample {configuration_file} has been created. Please edit it according to your needs")

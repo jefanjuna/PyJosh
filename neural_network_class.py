@@ -44,7 +44,7 @@ class FeedforwardNeuralNetwork:
     ## Validation
     def _handle_exception(self, exception):
         print(f"{type(exception).__name__}: {exception}")
-        print("If you think that your config file is corrupted or don't know how to fix it, just delete the config file and a new sample one will be generated!")
+        print("If you think that your config file is corrupted or don't know how to fix it, just delete the config file and a new random sample one will be generated!")
         exit()
 
     def _validate_structure(self):

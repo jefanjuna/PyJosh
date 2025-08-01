@@ -37,7 +37,7 @@ class FeedforwardNeuralNetwork:
             print(f"An error occurred upon obtaining config file: {e}")
             print(f"{configuration_file} either doesn't exist or is inaccessible")
             print(f"A sample {configuration_file} has been created. Please edit it according to your needs")
-            exit()
+            return sample_config
 
     ## Validation
     def _handle_exception(self, exception):

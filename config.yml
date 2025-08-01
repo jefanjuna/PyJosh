@@ -1,4 +1,4 @@
-layers: 
+layers:
 - neurons: 3
 - neurons: 4
   activation: relu

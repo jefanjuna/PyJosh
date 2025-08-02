@@ -97,7 +97,7 @@ class FeedforwardNeuralNetwork:
     def _softmax(self, x):
         exp_x = np.exp(x - np.max(x, axis=0, keepdims=True))
         return exp_x / np.sum(exp_x, axis=0, keepdims=True)
-    
+
     ## Forward pass
     def forward(self, activation):
         self._validate_input(activation)
@@ -110,7 +110,7 @@ class FeedforwardNeuralNetwork:
             activation_function = activation_function_map.get(self.layers[i + 1].get('activation'))
             activation = activation_function(z)
         return activation
-    
+
     ## Loss functions
     def _mean_squared_error(self, y_true, y_pred):
         return np.mean(np.square(y_true - y_pred))

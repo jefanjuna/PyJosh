@@ -1,10 +1,8 @@
 import numpy as np
 import yaml
-import random
 
 class FeedforwardNeuralNetwork:
     def __init__(self, configuration_file):
-        self.supported_activation_functions = ['relu', 'softmax']
         self.config = self._get_config(configuration_file)
         self.layers = self.config.get('layers')
         self._validate_structure()
@@ -16,19 +14,19 @@ class FeedforwardNeuralNetwork:
         sample_config = {
             "layers": [
                 {
-                    "neurons": random.randint(1, 10)
+                    "neurons": 3
+                },
+                {
+                    "neurons": 4,
+                    "activation": "relu"
+                },
+                {
+                    "neurons": 2,
+                    "activation": "softmax"
                 }
             ]
         }
-
-        for i in range(random.randint(1, 10)):
-            sample_config["layers"].append(
-                {
-                    "neurons": random.randint(1, 10),
-                    "activation": random.choice(self.supported_activation_functions)
-                }
-            )
-
+        
         try:
             with open(configuration_file, 'r') as config_file:
                 config = yaml.safe_load(config_file)
@@ -39,12 +37,12 @@ class FeedforwardNeuralNetwork:
             print(f"An error occurred upon obtaining config file: {e}")
             print(f"{configuration_file} either doesn't exist or is inaccessible")
             print(f"A sample {configuration_file} has been created. Please edit it according to your needs")
-            exit()
+            return sample_config
 
     ## Validation
     def _handle_exception(self, exception):
         print(f"{type(exception).__name__}: {exception}")
-        print("If you think that your config file is corrupted or don't know how to fix it, just delete the config file and a new random sample one will be generated!")
+        print("If you think that your config file is corrupted or don't know how to fix it, just delete the config file and I'll regenerate a sample one!")
         exit()
 
     def _validate_structure(self):
@@ -55,6 +53,7 @@ class FeedforwardNeuralNetwork:
         if not isinstance(input_neurons, int) or input_neurons <= 0:
             self._handle_exception(ValueError("layer 0 must have a 'neurons' key with a positive integer value"))
 
+        supported_activation_functions = ['relu', 'softmax']
         layers = self.layers[1:] # Exclude the first layer from validation specifically activation validation
         for index, layer in enumerate(layers, start=1):
             neurons = layer.get('neurons')
@@ -63,8 +62,8 @@ class FeedforwardNeuralNetwork:
                 self._handle_exception(ValueError(f"layer {index} must have a 'neurons' key with a positive integer value"))
             elif activation_function is None or activation_function == '':
                 self._handle_exception(ValueError(f"layer {index} must have an 'activation' key with a non-empty string value"))
-            elif activation_function not in self.supported_activation_functions:
-                self._handle_exception(ValueError(f"layer {index} has an unsupported activation function: {activation_function}. Supported activation functions are: {self.supported_activation_functions}"))
+            elif activation_function not in supported_activation_functions:
+                self._handle_exception(ValueError(f"layer {index} has an unsupported activation function: {activation_function}. Supported activation functions are: {supported_activation_functions}"))
 
     def _validate_input(self, activation):
         neurons = self.layers[0].get('neurons')
@@ -97,7 +96,7 @@ class FeedforwardNeuralNetwork:
     def _softmax(self, x):
         exp_x = np.exp(x - np.max(x, axis=0, keepdims=True))
         return exp_x / np.sum(exp_x, axis=0, keepdims=True)
-
+    
     ## Forward pass
     def forward(self, activation):
         self._validate_input(activation)
@@ -110,7 +109,7 @@ class FeedforwardNeuralNetwork:
             activation_function = activation_function_map.get(self.layers[i + 1].get('activation'))
             activation = activation_function(z)
         return activation
-
+    
     ## Loss functions
     def _mean_squared_error(self, y_true, y_pred):
         return np.mean(np.square(y_true - y_pred))

@@ -72,3 +72,8 @@ ok now, do backprop first then scaling for more activation/loss functions.
 I also wanna multithread the data loading process, load the next batch while the model is training the prvious on a separate thread than the training one so the training dosent lag behind.
 
 cuda here would automatically does multithreading during training
+
+
+update: use yaml instead of json for neural network config. although toml can be used more for settings config not for describing architecture. time to rewrite some code sigh :P
+
+okay using yaml for config now, gonna add comments soon

@@ -1,45 +1,17 @@
 import numpy as np
-import yaml
-import random
 
 class FeedforwardNeuralNetwork:
-    def __init__(self, configuration_file):
+    def __init__(self, input_array):
         self.supported_activation_functions = ['relu', 'softmax']
-        self.config = self._get_config(configuration_file)
+        self.config = self._get_config(input_array)
         self.layers = self.config.get('layers')
         self._validate_structure()
         self.weights = self._initialize_weights()
         self.biases = self._initialize_biases()
 
     ## Get config file
-    def _get_config(self, configuration_file):
-        sample_config = {
-            "layers": [
-                {
-                    "neurons": random.randint(1, 10)
-                }
-            ]
-        }
-
-        for i in range(random.randint(1, 10)):
-            sample_config["layers"].append(
-                {
-                    "neurons": random.randint(1, 10),
-                    "activation": random.choice(self.supported_activation_functions)
-                }
-            )
-
-        try:
-            with open(configuration_file, 'r') as config_file:
-                config = yaml.safe_load(config_file)
-            return config
-        except Exception as e:
-            with open(configuration_file, 'w') as config_file:
-                yaml.dump(sample_config, config_file, sort_keys=False)
-            print(f"An error occurred upon obtaining config file: {e}")
-            print(f"{configuration_file} either doesn't exist or is inaccessible")
-            print(f"A sample {configuration_file} has been created. Please edit it according to your needs")
-            exit()
+    def _get_config(self, input_array):
+        return input_array
 
     ## Validation
     def _handle_exception(self, exception):
@@ -117,4 +89,31 @@ class FeedforwardNeuralNetwork:
     ## Loss functions
     def _mean_squared_error(self, y_true, y_pred):
         return np.mean(np.square(y_true - y_pred))
-    
+
+## Example usage
+config = {
+  "layers": [
+    {
+      "neurons": 3
+    },
+    {
+      "neurons": 4,
+      "activation": "relu"
+    },
+    {
+      "neurons": 2,
+      "activation": "softmax"
+    }
+  ]
+}
+
+activation = np.array([
+    [1],
+    [2],
+    [3]
+])
+
+neural_network = FeedforwardNeuralNetwork(config)
+output = neural_network.forward(activation) # With this line, forward pass can be executed multiple times each with different input activations while keeping weights and biases the same.
+print(output)
+print(np.sum(output))

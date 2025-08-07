@@ -2,19 +2,13 @@ import numpy as np
 import pandas as pd
 from neural_network_class import FeedforwardNeuralNetwork as fnn
 
-# activation = np.array([
-#     [1],
-#     [2],
-#     [3]
-# ])
-
-## Extraction
+## Data pipeline
 
 df = pd.read_csv('data.csv')
 
 features_0 = df.iloc[:, 0].to_numpy() # Features extraction
 features_4 = [] # Parsing and reshaping
-for item in features_0:
+for item in features_0: # features_number/ground_truth_number: the number means the different stages of processing data from csv file
     features_1 = str(item)
     features_2 = np.array([list(map(float, features_1.split(',')))])
     features_3 = features_2.reshape(-1, 1)
@@ -28,12 +22,8 @@ for item in ground_truth_0:
     ground_truth_3 = ground_truth_2.reshape(-1, 1)
     ground_truth_4.append(ground_truth_3)
 
-# features_number/ground_truth_number: the number means the different stages of processing data from csv file
-
-
 # Refer to todo_and_notes.md for more info on the below line
 activation = np.array(features_4[0])
-
 
 ## Testing
 

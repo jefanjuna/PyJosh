@@ -105,10 +105,13 @@ class FeedforwardNeuralNetwork:
             'relu': self._relu,
             'softmax': self._softmax
         }
+        activationsss = []
         for i in range(len(self.layers) - 1):
             z = self.weights[f'layer{i}'] @ activation + self.biases[f'layer{i + 1}']
             activation_function = activation_function_map.get(self.layers[i + 1].get('activation'))
             activation = activation_function(z)
+            activationsss.append(activation)
+        print(activationsss)
         return activation
 
     ## Loss functions

@@ -77,3 +77,6 @@ cuda here would automatically does multithreading during training
 update: use yaml instead of json for neural network config. although toml can be used more for settings config not for describing architecture. time to rewrite some code sigh :P
 
 okay using yaml for config now, gonna add comments soon
+
+
+Time to rewrite it all in JAX oh my dayysss

@@ -117,11 +117,69 @@
 #             activation_function = layer.get('activation')
 #             print(activation_function)
 
-from jax import grad
+# from jax import grad
 
-def f(x):
-    return x**2 + 3*x + 2
+# def f(x):
+#     return x**2 + 3*x + 2
 
-df_dx = grad(f)
+# df_dx = grad(f)
 
-print(df_dx(2.0))
+# print(df_dx(2.0))
+
+# import numpy as np
+# z = np.random.normal(0, 1, size=100000)
+# x = 3.32983 * z
+# print(np.std(z))         # ~1
+# print(np.std(x))         # ~3.32983
+
+
+# from jax import random
+# key = random.key(42)
+# print(random.normal(key))
+# for i in range(10):
+#   key, subkey = random.split(key)
+
+#   val = random.normal(subkey)
+#   del subkey  # The subkey is consumed by normal().
+
+#   print(f"draw {i}: {val}")
+
+# print(random.normal(key))
+
+
+# import jax.numpy as jnp
+# from jax import random
+
+# key = random.key(42)
+# stdev = 3.696522
+# mean = 0
+
+# for i in range(3):
+#     key, subkey = random.split(key)
+#     print(random.normal(subkey, dtype=jnp.float32, shape=(4, 3)) * stdev + mean)
+#     del subkey
+# del key
+
+
+# a = jnp.array([[1, 2], [3, 4]])
+# print(a * 5)   # Multiplies every element by 5
+# print(a + 10)  # Adds 10 to every element 
+
+# import jax.numpy as jnp
+# from jax import random
+# import time
+
+# key = random.key(time.time_ns())
+
+# supported_activation_functions = ['relu', 'softmax']
+# num_of_activations = len(supported_activation_functions)
+
+# for i in range(10):
+#     key, subkey = random.split(key)
+#     index = random.randint(subkey, shape=(), minval=0, maxval=num_of_activations, dtype=jnp.int32)
+#     print(supported_activation_functions[index])
+#     del subkey
+# del key
+
+# for i in range(3):
+#     print(i)

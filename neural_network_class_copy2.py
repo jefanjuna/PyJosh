@@ -1,4 +1,3 @@
-import jax
 import jax.numpy as jnp
 from jax import random
 import yaml
@@ -98,7 +97,6 @@ class FeedforwardNeuralNetwork:
             weights[f'layer{i}'] = random.normal(subkey, shape=(self.layers[i + 1].get('neurons'), self.layers[i].get('neurons')), dtype=jnp.float32) * standard_deviation + mean
             del subkey
         del self.key
-        print(weights) ##################
         return weights
 
     def _initialize_biases(self):

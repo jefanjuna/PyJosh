@@ -1,6 +1,6 @@
 import jax.numpy as jnp
 import pandas as pd
-from neural_network_class_copy2 import FeedforwardNeuralNetwork as fnn
+from neural_network_class import FeedforwardNeuralNetwork as fnn
 
 ## Data pipeline
 

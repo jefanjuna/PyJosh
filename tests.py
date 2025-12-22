@@ -183,3 +183,23 @@
 
 # for i in range(3):
 #     print(i)
+
+# import time
+# print(time.time_ns())
+
+# print("""layers:
+# - neurons: 3 # layer 1
+# - neurons: 4 # layer 2, you can add however many layers you want. Number of neurons is changeable.
+#   activation: relu # Don't forget to mention activation. First layer naturally has no activation; if you add it, it'll be ignored.
+# - neurons: 2 # layer 3
+#   activation: softmax
+# """)
+
+# print("""
+#       layers:
+#       - neurons: 3 # layer 1
+#       - neurons: 4 # layer 2, you can add however many layers you want. Number of neurons is changeable.
+#         activation: relu # Don't forget to mention activation. First layer naturally has no activation; if you add it, it'll be ignored.
+#       - neurons: 2 # layer 3
+#         activation: softmax
+# """)

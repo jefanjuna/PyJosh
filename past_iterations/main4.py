@@ -1,12 +1,10 @@
-import jax.numpy as jnp
-from jax import random
+import numpy as np
 import yaml
-import time
+import random
 
 class FeedforwardNeuralNetwork:
     def __init__(self, configuration_file):
         self.supported_activation_functions = ['relu', 'softmax']
-        self.key = random.key(time.time_ns())
         self.config = self._get_config(configuration_file)
         self.layers = self.config.get('layers')
         self._validate_structure()
@@ -15,12 +13,21 @@ class FeedforwardNeuralNetwork:
 
     ## Get config file
     def _get_config(self, configuration_file):
-        sample_config = """layers:
-- neurons: 3
-- neurons: 4
-  activation: relu
-- neurons: 2
-  activation: softmax"""
+        sample_config = {
+            "layers": [
+                {
+                    "neurons": random.randint(1, 10)
+                }
+            ]
+        }
+
+        for i in range(random.randint(1, 10)):
+            sample_config["layers"].append(
+                {
+                    "neurons": random.randint(1, 10),
+                    "activation": random.choice(self.supported_activation_functions)
+                }
+            )
 
         try:
             with open(configuration_file, 'r') as config_file:
@@ -28,7 +35,7 @@ class FeedforwardNeuralNetwork:
             return config
         except Exception as e:
             with open(configuration_file, 'w') as config_file:
-                config_file.write(sample_config)
+                yaml.dump(sample_config, config_file, sort_keys=False)
             print(f"An error occurred upon obtaining config file: {e}")
             print(f"{configuration_file} either doesn't exist or is inaccessible")
             print(f"A sample {configuration_file} has been created. Please edit it according to your needs")
@@ -61,9 +68,9 @@ class FeedforwardNeuralNetwork:
 
     def _validate_input(self, activation):
         neurons = self.layers[0].get('neurons')
-        if not isinstance(activation, jnp.ndarray) or not (jnp.issubdtype(activation.dtype, jnp.integer) or jnp.issubdtype(activation.dtype, jnp.floating)):
-            self._handle_exception(TypeError("Input activation vector must be an integer or floating dtype jnumpy array"))
-        elif jnp.any(jnp.isnan(activation)):
+        if not isinstance(activation, np.ndarray) or not (np.issubdtype(activation.dtype, np.integer) or np.issubdtype(activation.dtype, np.floating)):
+            self._handle_exception(TypeError("Input activation vector must be an integer or floating dtype numpy array"))
+        elif np.any(np.isnan(activation)):
             self._handle_exception(ValueError("Input activation vector cannot contain NaN values"))
         elif activation.shape != (neurons, 1):
             self._handle_exception(ValueError(f"Input activation vector shape {activation.shape} needs to match the shape {neurons, 1}"))
@@ -71,29 +78,25 @@ class FeedforwardNeuralNetwork:
     ## Initialization
     def _initialize_weights(self):
         weights = {}
-        mean = 0
         for i in range(len(self.layers) - 1):
-            self.key, subkey = random.split(self.key)
-            standard_deviation = jnp.sqrt(2.0 / self.layers[i].get('neurons'))
-            weights[f'layer{i}'] = random.normal(subkey, shape=(self.layers[i + 1].get('neurons'), self.layers[i].get('neurons')), dtype=jnp.float32) * standard_deviation + mean
-            del subkey
-        del self.key
+            standard_deviation = np.sqrt(2.0 / self.layers[i].get('neurons'))
+            weights[f'layer{i}'] = np.random.normal(0, standard_deviation, size=(self.layers[i + 1].get('neurons'), self.layers[i].get('neurons')))
         return weights
 
     def _initialize_biases(self):
         biases = {}
         for i in range(len(self.layers) - 1):
             neurons = self.layers[i + 1].get('neurons')
-            biases[f'layer{i + 1}'] = jnp.zeros((neurons, 1), dtype=jnp.float32)
+            biases[f'layer{i + 1}'] = np.zeros((neurons, 1))
         return biases
 
     ## Activation functions
     def _relu(self, x):
-        return jnp.maximum(0, x)
+        return np.maximum(0, x)
 
     def _softmax(self, x):
-        exp_x = jnp.exp(x - jnp.max(x, axis=0, keepdims=True))
-        return exp_x / jnp.sum(exp_x, axis=0, keepdims=True)
+        exp_x = np.exp(x - np.max(x, axis=0, keepdims=True))
+        return exp_x / np.sum(exp_x, axis=0, keepdims=True)
 
     ## Forward pass
     def forward(self, activation):
@@ -110,5 +113,5 @@ class FeedforwardNeuralNetwork:
 
     ## Loss functions
     def _mean_squared_error(self, y_true, y_pred):
-        return jnp.mean(jnp.square(y_true - y_pred))
+        return np.mean(np.square(y_true - y_pred))
     

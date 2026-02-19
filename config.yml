@@ -1,6 +1,6 @@
 layers:
-- neurons: 3
+- neurons: 3 # First layer, can specify number of neurons
 - neurons: 4
-  activation: relu
+  activation: relu # Second layer onwards, need to specify activation function
 - neurons: 2
   activation: softmax

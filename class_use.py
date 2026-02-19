@@ -2,34 +2,60 @@ import jax.numpy as jnp
 import pandas as pd
 from neural_network_class import FeedforwardNeuralNetwork as fnn
 
-## Data pipeline
+# --------------------------------------------------
+# Data Pipeline
+# --------------------------------------------------
 
 df = pd.read_csv('data.csv')
 
-features_0 = df.iloc[:, 0].to_numpy() # Features extraction
-features_4 = [] # Parsing and reshaping
-for item in features_0: # features_number/ground_truth_number: the number means the different stages of processing data from csv file
-    features_1 = str(item)
-    features_2 = jnp.array([list(map(float, features_1.split(',')))])
-    features_3 = features_2.reshape(-1, 1)
-    features_4.append(features_3)
-features_5 = jnp.stack(features_4)
+# -------- Features --------
+features_raw = df.iloc[:, 0].to_numpy()
 
-ground_truth_0 = df.iloc[:, 1].to_numpy() # Ground truth extraction
-ground_truth_4 = [] # Parsing and reshaping
-for item in ground_truth_0:
-    ground_truth_1 = str(item)
-    ground_truth_2 = jnp.array([list(map(float, ground_truth_1.split(',')))])
-    ground_truth_3 = ground_truth_2.reshape(-1, 1)
-    ground_truth_4.append(ground_truth_3)
-ground_truth_5 = jnp.stack(ground_truth_4)
+features_list = []
+for item in features_raw:
+    values = list(map(float, str(item).split(',')))
+    features_list.append(jnp.array(values))  # shape: (input_dim,)
 
-# Refer to todo_and_notes.md for more info on the below line
-activation = jnp.array(features_5[0])
+features = jnp.stack(features_list)  # shape: (batch_size, input_dim)
 
-## Testing
+# -------- Ground Truth --------
+ground_truth_raw = df.iloc[:, 1].to_numpy()
+
+ground_truth_list = []
+for item in ground_truth_raw:
+    values = list(map(float, str(item).split(',')))
+    ground_truth_list.append(jnp.array(values))  # shape: (output_dim,)
+
+ground_truth = jnp.stack(ground_truth_list)  # shape: (batch_size, output_dim)
+
+print("Features shape:", features.shape)
+print("Ground truth shape:", ground_truth.shape)
+
+# --------------------------------------------------
+# Initialize Network
+# --------------------------------------------------
 
 neural_network = fnn('config.yml')
-output = neural_network.forward(activation) # With this line, forward pass can be executed multiple times each with different input activations while keeping weights and biases the same. Basically multiple instances of the neural network.
-print(output)
-print(jnp.sum(output))
+
+# --------------------------------------------------
+# Train
+# --------------------------------------------------
+
+neural_network.train(
+    features,
+    ground_truth,
+    epochs=1000,
+    lr=0.01
+)
+
+# --------------------------------------------------
+# Inference
+# --------------------------------------------------
+
+# Single sample (keep batch dimension!)
+sample = features[0:1]   # shape: (1, input_dim)
+
+output = neural_network.forward(sample)
+
+print("Prediction:", output)
+print("Sum of probabilities:", jnp.sum(output))

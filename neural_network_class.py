@@ -16,9 +16,7 @@ class FeedforwardNeuralNetwork:
 
         self.params = self._initialize_parameters()
 
-    # --------------------------------------------------
     # Config
-    # --------------------------------------------------
 
     def _get_config(self, configuration_file):
         sample_config = """layers:
@@ -55,9 +53,7 @@ class FeedforwardNeuralNetwork:
                         f"Layer {i} activation must be one of {self.supported_activation_functions}"
                     )
 
-    # --------------------------------------------------
     # Initialization
-    # --------------------------------------------------
 
     def _initialize_parameters(self):
         params = []
@@ -77,9 +73,7 @@ class FeedforwardNeuralNetwork:
 
         return params
 
-    # --------------------------------------------------
     # Activations
-    # --------------------------------------------------
 
     def _relu(self, x):
         return jnp.maximum(0, x)
@@ -95,9 +89,7 @@ class FeedforwardNeuralNetwork:
         elif name == "softmax":
             return self._softmax(x)
 
-    # --------------------------------------------------
-    # Forward (PURE FUNCTION)
-    # --------------------------------------------------
+    # Forward
 
     def forward_with_params(self, params, x):
         """
@@ -120,9 +112,7 @@ class FeedforwardNeuralNetwork:
     def forward(self, x):
         return self.forward_with_params(self.params, x)
 
-    # --------------------------------------------------
     # Loss
-    # --------------------------------------------------
 
     def cross_entropy_loss(self, params, x, y):
         """
@@ -132,9 +122,7 @@ class FeedforwardNeuralNetwork:
         preds = self.forward_with_params(params, x)
         return -jnp.mean(jnp.sum(y * jnp.log(preds + 1e-8), axis=-1))
 
-    # --------------------------------------------------
-    # Training Step (JIT compiled)
-    # --------------------------------------------------
+    # Training Step
 
     def train_step(self, params, x, y, lr):
 
@@ -150,9 +138,7 @@ class FeedforwardNeuralNetwork:
 
         return new_params, loss_value
 
-    # --------------------------------------------------
     # Training Loop
-    # --------------------------------------------------
 
     def train(self, x, y, epochs=1000, lr=0.01):
 

@@ -2,13 +2,11 @@ import jax.numpy as jnp
 import pandas as pd
 from neural_network_class import FeedforwardNeuralNetwork as fnn
 
-# --------------------------------------------------
 # Data Pipeline
-# --------------------------------------------------
 
 df = pd.read_csv('data.csv')
 
-# -------- Features --------
+# Features
 features_raw = df.iloc[:, 0].to_numpy()
 
 features_list = []
@@ -18,7 +16,7 @@ for item in features_raw:
 
 features = jnp.stack(features_list)  # shape: (batch_size, input_dim)
 
-# -------- Ground Truth --------
+# Ground Truth
 ground_truth_raw = df.iloc[:, 1].to_numpy()
 
 ground_truth_list = []
@@ -31,15 +29,11 @@ ground_truth = jnp.stack(ground_truth_list)  # shape: (batch_size, output_dim)
 print("Features shape:", features.shape)
 print("Ground truth shape:", ground_truth.shape)
 
-# --------------------------------------------------
 # Initialize Network
-# --------------------------------------------------
 
 neural_network = fnn('config.yml')
 
-# --------------------------------------------------
 # Train
-# --------------------------------------------------
 
 neural_network.train(
     features,
@@ -48,11 +42,9 @@ neural_network.train(
     lr=0.01
 )
 
-# --------------------------------------------------
 # Inference
-# --------------------------------------------------
 
-# Single sample (keep batch dimension!)
+# Single sample (keep batch dimension)
 sample = features[0:1]   # shape: (1, input_dim)
 
 output = neural_network.forward(sample)

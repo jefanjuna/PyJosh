@@ -30,14 +30,14 @@ You can add new activation functions, loss functions, or change the architecture
 
 ```
 neural_network_class.py   # Core framework
-class_use.py               # Framework usage
+class_use.py              # Framework usage
 config.yml                # Network structure
 data.csv                  # Example dataset
 ```
 
 ---
 
-## Configuration Example
+## Configuration example
 
 `config.yml`
 
@@ -62,7 +62,7 @@ Same idea for new loss functions.
 
 ---
 
-## Dataset
+## Dataset example
 
 The example dataset (`data.csv`) looks like this:
 
@@ -91,8 +91,14 @@ the network will work.
 
 ---
 
-## Run Example
+## To run example
 
+First, install the required dependencies:
+```
+pip install jax jaxlib pandas pyyaml
+```
+
+Then run:
 ```
 python class_use.py
 ```

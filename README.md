@@ -93,12 +93,17 @@ the network will work.
 
 ## To run example
 
-First, install the required dependencies:
+First, clone the github repo:
+```
+git clone https://github.com/jefanjuna/PyJosh.git
+```
+
+Then, install the required dependencies:
 ```
 pip install jax jaxlib pandas pyyaml
 ```
 
-Then run:
+Finally, run:
 ```
 python class_use.py
 ```
